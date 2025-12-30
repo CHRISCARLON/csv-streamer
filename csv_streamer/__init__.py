@@ -2,7 +2,7 @@
 CSV Streamer - Stream CSV files as Arrow tables.
 """
 
-from .streamer import (
+from .csv_streamer import (
     ColumnError,
     DecodeError,
     NotCSVError,
