@@ -13,7 +13,7 @@ You can stream:
 - Local CSVs
 - Local CSVs in a zip file
 - Remote CSVs
-- Remove CSVs in a zip file
+- Remote CSVs in a zip file
 
 ## Example
 
