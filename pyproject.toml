@@ -1,0 +1,10 @@
+[project]
+name = "csv-streamer"
+version = "0.1.0"
+description = "Stream CSV files (including from ZIP archives) as Arrow tables"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "pyarrow>=22.0.0",
+    "requests>=2.32.5",
+]
