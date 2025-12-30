@@ -17,7 +17,9 @@ def zipzip(
     chunk_size: int = _DEFAULT_CHUNK_SIZE,
     allow_zip64: bool = True,
     allowed_encryption_mechanisms: Container[_Encryption] = _ALL_ENCRYPTIONS,
-) -> Generator[Tuple[bytes, Optional[int], Generator[bytes, Any, None]], Any, None]:
+) -> Generator[
+    Tuple[bytes, Optional[int], Generator[bytes, Any, None]], Any, None
+]:
     local_file_header_signature = b"PK\x03\x04"
     local_file_header_struct = Struct("<H2sHHHIIIHH")
     zip64_compressed_size = 0xFFFFFFFF
@@ -191,7 +193,9 @@ def zipzip(
                     extra[extra_offset : extra_offset + 2]
                 )
                 extra_offset += 2
-                extra_data = extra[extra_offset : extra_offset + extra_data_size]
+                extra_data = extra[
+                    extra_offset : extra_offset + extra_data_size
+                ]
                 extra_offset += extra_data_size
                 yield (extra_signature, extra_data)
 
@@ -320,9 +324,14 @@ def zipzip(
                     compressed_size_dd == compressed_size_data,
                     uncompressed_size_dd == uncompressed_size_data,
                     next_signature
-                    in (local_file_header_signature, central_directory_signature),
+                    in (
+                        local_file_header_signature,
+                        central_directory_signature,
+                    ),
                 )
-                best_matches = max(best_matches, matches, key=lambda t: t.count(True))
+                best_matches = max(
+                    best_matches, matches, key=lambda t: t.count(True)
+                )
 
                 if best_matches == (True, True, True, True, True):
                     break
@@ -357,7 +366,9 @@ def zipzip(
             uncompressed_size_raw,
             file_name_len,
             extra_field_len,
-        ) = local_file_header_struct.unpack(get_num(local_file_header_struct.size))
+        ) = local_file_header_struct.unpack(
+            get_num(local_file_header_struct.size)
+        )
 
         flag_bits = tuple(get_flag_bits(flags))
         if flag_bits[4] or flag_bits[5] or flag_bits[6] or flag_bits[13]:
@@ -373,7 +384,10 @@ def zipzip(
                 "Encryption not supported in simplified version"
             )
 
-        if password is not None and NO_ENCRYPTION not in allowed_encryption_mechanisms:
+        if (
+            password is not None
+            and NO_ENCRYPTION not in allowed_encryption_mechanisms
+        ):
             raise FileIsNotEncrypted()
 
         compression = compression_raw

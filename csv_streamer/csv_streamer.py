@@ -128,7 +128,9 @@ def _parse_csv_lines(
                 if columns:
                     missing = [c for c in columns if c not in header]
                     if missing:
-                        raise ColumnError(f"Columns not found in CSV: {missing}")
+                        raise ColumnError(
+                            f"Columns not found in CSV: {missing}"
+                        )
                     column_indices = [header.index(c) for c in columns]
                     header = [header[i] for i in column_indices]
 
@@ -172,7 +174,9 @@ def _rows_to_arrow_table(
             for field in s:
                 if field.name in column_data:
                     try:
-                        arr = pa.array(column_data[field.name], type=pa.string())
+                        arr = pa.array(
+                            column_data[field.name], type=pa.string()
+                        )
                         arr = arr.cast(field.type, safe=False)
                     except (pa.ArrowInvalid, pa.ArrowNotImplementedError) as e:
                         raise SchemaError(
@@ -216,14 +220,18 @@ def _stream_csv_direct(
         if len(row_buffer) >= batch_size:
             batch_count += 1
             table = _rows_to_arrow_table(header, row_buffer, schema)
-            logger.debug("Yielding batch %d: %d rows", batch_count, len(row_buffer))
+            logger.debug(
+                "Yielding batch %d: %d rows", batch_count, len(row_buffer)
+            )
             yield table
             row_buffer = []
 
     if row_buffer:
         batch_count += 1
         table = _rows_to_arrow_table(header, row_buffer, schema)
-        logger.debug("Yielding final batch %d: %d rows", batch_count, len(row_buffer))
+        logger.debug(
+            "Yielding final batch %d: %d rows", batch_count, len(row_buffer)
+        )
         yield table
 
     logger.info("Completed: %d batches", batch_count)
@@ -239,7 +247,9 @@ def _stream_csv_from_zip(
 
     for file_name, file_size, unzipped_chunks in zipzip(byte_chunks):
         file_name_str = (
-            file_name.decode("utf-8") if isinstance(file_name, bytes) else file_name
+            file_name.decode("utf-8")
+            if isinstance(file_name, bytes)
+            else file_name
         )
 
         # Only process CSV files
@@ -272,7 +282,9 @@ def _stream_csv_from_zip(
             if len(row_buffer) >= batch_size:
                 batch_count += 1
                 table = _rows_to_arrow_table(header, row_buffer, schema)
-                logger.debug("Yielding batch %d: %d rows", batch_count, len(row_buffer))
+                logger.debug(
+                    "Yielding batch %d: %d rows", batch_count, len(row_buffer)
+                )
                 yield table
                 row_buffer = []
 
@@ -333,22 +345,34 @@ def stream_csv(
                 case (True, True):
                     logger.info("Streaming remote ZIP: %s", source_str)
                     yield from _stream_csv_from_zip(
-                        _iter_url_chunks(source_str), batch_size, columns, schema
+                        _iter_url_chunks(source_str),
+                        batch_size,
+                        columns,
+                        schema,
                     )
                 case (True, False):
                     logger.info("Streaming remote CSV: %s", source_str)
                     yield from _stream_csv_direct(
-                        _iter_url_chunks(source_str), batch_size, columns, schema
+                        _iter_url_chunks(source_str),
+                        batch_size,
+                        columns,
+                        schema,
                     )
                 case (False, True):
                     logger.info("Streaming local ZIP: %s", source_str)
                     yield from _stream_csv_from_zip(
-                        _iter_file_chunks(Path(source_str)), batch_size, columns, schema
+                        _iter_file_chunks(Path(source_str)),
+                        batch_size,
+                        columns,
+                        schema,
                     )
                 case (False, False):
                     logger.info("Streaming local CSV: %s", source_str)
                     yield from _stream_csv_direct(
-                        _iter_file_chunks(Path(source_str)), batch_size, columns, schema
+                        _iter_file_chunks(Path(source_str)),
+                        batch_size,
+                        columns,
+                        schema,
                     )
 
         case _:

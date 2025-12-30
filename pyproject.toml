@@ -18,6 +18,9 @@ dependencies = [
     "requests>=2.32.5",
 ]
 
+[tool.ruff]
+line-length = 80
+
 [project.urls]
 Homepage = "https://github.com/CHRISCARLON/csv-streamer"
 Repository = "https://github.com/CHRISCARLON/csv-streamer"
